@@ -10,6 +10,6 @@ urlpatterns = [
     path('detail/<int:movie_id>', movie_detail),
     path('detail/<int:movie_id>/watched', movie_watched),
     path('detail/<int:movie_id>/unwatched', movie_unwatched),
-    path('list', movie_list)
-
+    path('movies_list', movie_list),
+    path('watched_movies', watched_movies),
 ]

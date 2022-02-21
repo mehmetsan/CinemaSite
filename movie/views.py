@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from .forms import CreateDirectorForm, CreateMovieForm, SearchMovie
+from .forms import CreateDirectorForm, CreateMovieForm, SearchMovie, PlatformFilter
 from .models import Director, Movie
 
 
@@ -94,6 +94,12 @@ def movie_search(request):
 def movie_list(request):
     all_movies = Movie.objects.all()
     user = request.user
+    filter_form = PlatformFilter(request.POST or None)
+
+    if request.POST:
+        if filter_form.is_valid():
+            filter_platform = filter_form.cleaned_data.get('platform')
+            all_movies = all_movies.filter(platform=filter_platform)
 
     for movie in all_movies:
         if movie.viewer.filter(id=user.id).exists():
@@ -101,4 +107,18 @@ def movie_list(request):
         else:
             movie.flag = "Not Watched"
 
-    return render(request, template_name="movie_list.html", context={'movies': all_movies})
+    return render(request, template_name="movie_list.html", context={'movies': all_movies, 'form': filter_form})
+
+
+def watched_movies(request):
+    user = request.user
+    watched = Movie.objects.filter(viewer=user)
+
+    filter_form = PlatformFilter(request.POST or None)
+
+    if request.POST:
+        if filter_form.is_valid():
+            filter_platform = filter_form.cleaned_data.get('platform')
+            watched = watched.filter(platform=filter_platform)
+
+    return render(request, template_name="watched_movies.html", context={'movies': watched, 'form': filter_form})

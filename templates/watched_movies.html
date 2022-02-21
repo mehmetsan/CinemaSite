@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <h1>Listed Movies</h1>
+    <h1>Watched Movies</h1>
 
     <form action="" method="POST">
         {% csrf_token %}
@@ -10,7 +10,7 @@
     </form>
 
     {% for movie in movies %}
-        <h2> <a href="detail/{{ movie.id }}">{{ movie.title }}</a> <i> ({{ movie.year }})</i>  <i>{{ movie.flag }}</i>  </h2>
+        <h2> <a href="detail/{{ movie.id }}">{{ movie.title }}</a> <i> ({{ movie.year }})</i> </h2>
         <br>
     {% endfor %}
 {% endblock %}
