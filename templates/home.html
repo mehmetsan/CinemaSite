@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
-Welcome to CinemaPerTe!
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block body %}
+    <br>
+    <h1>Welcome to CinemaPerTe {{ request.user.first_name }}!</h1>
+
+    <h3><a href="/movie/create"> Add A Film</a></h3><br>
+
+    <h3><a href="/movie/search"> Search a Movie </a></h3><br>
+
+    <h3><a href="/movie/list"> List Movies </a></h3><br>
+
+{% endblock %}

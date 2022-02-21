@@ -7,8 +7,9 @@
 <body>
 <h1>Listed Movies</h1>
 {% for movie in movies %}
-    <h2> <a href="detail/{{ movie.id }}">{{ movie.title }}</a> </h2>
-    <h3>{{ movie.date }}</h3>
+    <h2> <a href="detail/{{ movie.id }}">{{ movie.title }}</a> <i> ({{ movie.year }})</i>  <i>{{ movie.flag }}</i>  </h2>
+
+
     <br>
 {% endfor %}
 

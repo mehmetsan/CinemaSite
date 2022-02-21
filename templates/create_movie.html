@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Movie</title>
-</head>
-<body>
-<h2>{{ message }}</h2>
-{% if movies %}
-    <h1>Director's Already Present Movies</h1>
-    {% for movie in movies %}
-        <h2>{{ movie.title }} <i>({{ movie.year }})</i> </h2>
-        <br>
-    {% endfor %}
-{% endif %}
+{% extends 'base.html' %}
 
-<form action="/movie/movieform/{{ director.id }}" method="POST", enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit">
-</form>
+{% block body %}
+    <h2>{{ message }}</h2>
+    {% if movies %}
+        <h1>Director's Already Present Movies</h1>
+        {% for movie in movies %}
+            <h2>{{ movie.title }} <i>({{ movie.year }})</i> </h2>
+            <br>
+        {% endfor %}
+    {% endif %}
 
-</body>
-</html>
+    <h1>Add a new movie</h1>
+    <form action="/movie/movieform/{{ director.id }}" method="POST", enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+
+{% endblock %}

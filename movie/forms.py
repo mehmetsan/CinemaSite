@@ -11,4 +11,10 @@ class CreateDirectorForm(ModelForm):
 class CreateMovieForm(ModelForm):
     class Meta:
         model = Movie
-        exclude = ['director']
+        exclude = ['director', 'viewer', 'flag']
+
+
+class SearchMovie(ModelForm):
+    class Meta:
+        model = Movie
+        fields = ['title']
