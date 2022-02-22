@@ -6,13 +6,13 @@
     <img src="{{ movie.image.url }}">
     {% endif %}
     <h2>by {{ movie.director.name }}</h2>
-    <h2></h2>
     {% if watched %}
         <h2>Already Watched</h2><br>
-        <a href="/movie/detail/{{ movie.id }}/unwatched">Flag as Not Watched</a>
+        <a href="/movie/detail/{{ movie.id }}/unwatched"><h3>Flag as Not Watched</h3></a>
     {% else %}
         <h2>Not Watched Yet</h2>
-        <a href="/movie/detail/{{ movie.id }}/watched">Flag as Watched</a><br>
+        <a href="/movie/detail/{{ movie.id }}/watched"><h3>Flag as Watched</h3></a><br>
     {% endif %}
+    <a href="/review/rate/{{ movie.id }}"><h3>Review this Movie</h3></a>
 
 {% endblock %}

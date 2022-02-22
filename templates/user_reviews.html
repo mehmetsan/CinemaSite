@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <h1>{{ name }}'s Reviews</h1>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ sort_form.as_p }}
+        <input type="submit">
+    </form>
+
+    {% for review in reviews %}
+        <a href="/movie/detail/{{ review.movie.id }}"><h1>{{ review.movie.title }}</h1></a>
+        <h3>Rating: {{ review.rating }}/10</h3>
+        <h3>Platform: {{ review.movie.platform }}</h3>
+        <h2>{{ review.comment }}</h2>
+        <br>
+    {% endfor %}
+{% endblock %}

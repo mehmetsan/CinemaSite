@@ -24,5 +24,6 @@ urlpatterns = [
     path('login/', login_view),
     path('register/', register_view),
     path('logout/', logout_view),
-    path("movie/", include("movie.urls"))
+    path("movie/", include("movie.urls")),
+    path("review/", include("review.urls"))
 ]
