@@ -31,6 +31,12 @@ def user_reviews(request, user_id):
             reviews = reviews.order_by("movie__platform")
         elif sort_param == "rating":
             reviews = reviews.order_by("rating")
+        elif sort_param == "unseen":
+            unseen_movies = []
+            for review in reviews:
+                if not review.movie.viewer.filter(id=request.user.id).exists():
+                    unseen_movies.append(review)
+            reviews = unseen_movies
         else:
             reviews = reviews.order_by("id")
 

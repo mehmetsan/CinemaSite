@@ -1,7 +1,7 @@
 from django import forms
 from .models import Review
 
-sort_params = [("default", "default"), ("platform", "Platform"), ("rating", "Rating")]
+sort_params = [("default", "default"), ("platform", "Platform"), ("rating", "Rating"), ("unseen", "unseen")]
 rating_sort_params = [("default", "default"), ("rating", "rating")]
 
 
