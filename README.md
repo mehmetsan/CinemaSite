@@ -1,6 +1,10 @@
 # CinemaSite
 This is a demo movie review site example
 
+# A video tutorial available at:
+https://www.loom.com/share/61b452bacc084b1a861220efc23e1221
+
+
 After cloning the repo to your local change to that directory and follow the steps below:
 
 
