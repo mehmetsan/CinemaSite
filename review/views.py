@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from .forms import CreateReviewForm, SortForm, UserSearchForm
+from .forms import CreateReviewForm, SortForm, UserSearchForm, RatingSortForm
 from movie.models import Movie
 from .models import Review
 from django.contrib.auth.models import User
@@ -31,6 +31,8 @@ def user_reviews(request, user_id):
             reviews = reviews.order_by("movie__platform")
         elif sort_param == "rating":
             reviews = reviews.order_by("rating")
+        else:
+            reviews = reviews.order_by("id")
 
     return render(request, template_name="user_reviews.html", context={'name': user.first_name,
                                                                        'reviews': reviews,
@@ -51,4 +53,14 @@ def search_user(request):
 def movie_reviews(request, movie_id):
     movie = Movie.objects.get(id=movie_id)
     reviews = Review.objects.all().filter(movie__id=movie_id)
-    return render(request, template_name="movie_reviews.html", context={'movie': movie, 'reviews': reviews})
+    sort_form = RatingSortForm(request.POST or None)
+
+    if sort_form.is_valid():
+        sort_param = sort_form.cleaned_data.get('sort_param')
+        if sort_param == "rating":
+            reviews = reviews.order_by("rating")
+        else:
+            reviews = reviews.order_by("id")
+
+    return render(request, template_name="movie_reviews.html", context={'movie': movie, 'sort_form': sort_form,
+                                                                        'reviews': reviews})

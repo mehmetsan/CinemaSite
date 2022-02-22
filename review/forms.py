@@ -1,7 +1,8 @@
 from django import forms
 from .models import Review
 
-sort_params = [("platform", "Platform"), ("rating", "Rating")]
+sort_params = [("default", "default"), ("platform", "Platform"), ("rating", "Rating")]
+rating_sort_params = [("default", "default"), ("rating", "rating")]
 
 
 class CreateReviewForm(forms.ModelForm):
@@ -12,6 +13,10 @@ class CreateReviewForm(forms.ModelForm):
 
 class SortForm(forms.Form):
     sort_param = forms.ChoiceField(label="Sort by", choices=sort_params)
+
+
+class RatingSortForm(forms.Form):
+    sort_param = forms.ChoiceField(label="Sort by", choices=rating_sort_params)
 
 
 class UserSearchForm(forms.Form):
