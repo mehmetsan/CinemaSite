@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1>Review Page</h1>
-
+    <h2>{{ movie.title }}</h2>
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}

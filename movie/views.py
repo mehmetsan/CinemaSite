@@ -3,58 +3,51 @@ from .forms import CreateDirectorForm, CreateMovieForm, SearchMovie, PlatformFil
 from .models import Director, Movie
 
 
-# Create your views here.
+# Used for displaying the director creation page
 def create_director(request):
-    form = CreateDirectorForm()
-    return render(request, template_name="create_director.html", context={'form': form})
-
-
-def director_form(request):
-    form = CreateDirectorForm(request.POST)
-    directors_movies, message = "", ""
+    form = CreateDirectorForm(request.POST or None)
 
     if form.is_valid():
         proposed_director = form.cleaned_data.get('name')
-        print("Proposed name: ", proposed_director)
-        result = Director.objects.filter(name=proposed_director)
+        result = Director.objects.filter(name__icontains=proposed_director).exists()
 
         if not result:
             form.save()
-            message = "Director created"
-        else:
-            message = "Director already present"
 
-    new_movie_form = CreateMovieForm()
-    director = Director.objects.get(name=proposed_director)
+        director_id = Director.objects.get(name__icontains=proposed_director).id
+        return HttpResponseRedirect("/movie/create_movie/{}".format(director_id))
+
+    return render(request, template_name="create_director.html", context={'form': form})
+
+
+# Used for displaying the movie creation page
+# Parameter: director_id is used for referencing the correct director to match with the movie
+def create_movie(request, director_id):
+    director = Director.objects.get(id=director_id)
     directors_movies = director.movies.all()
 
-    return render(request, template_name="create_movie.html", context={'message': message, "form": new_movie_form,
-                                                                       'movies': directors_movies,
-                                                                       'director': director})
+    new_movie_form = CreateMovieForm(request.POST or None)
+    if new_movie_form.is_valid():
+        movie_object = new_movie_form.save(commit=False)
+        proposed_movie = movie_object.title
 
-
-def create_movie(request):
-    return render(request, template_name="create_movie.html", context={})
-
-
-def movie_form(request, director_id):
-    form = CreateMovieForm(request.POST)
-
-    if form.is_valid():
-        movie_object = form.save(commit=False)
-        proposed_movie = form.cleaned_data.get('title')
-        director = Director.objects.get(id=director_id)
-        director_movie_names = [each.title for each in director.movies.all()]
-        if proposed_movie in director_movie_names:
+        # Check whether the proposed movie already exists
+        if director.movies.filter(title=proposed_movie).exists():
             message = "Movie already present"
         else:
             message = "Movie added!"
             movie_object.director = director
-            form.save()
+            movie_object.save()
+        return render(request, template_name="result.html", context={"message": message})
 
-    return render(request, template_name="result.html", context={'message': message})
+    return render(request, template_name="create_movie.html", context={'form': new_movie_form,
+                                                                       'movies': directors_movies,
+                                                                       'director': director})
 
 
+# Used for displaying the details page of a movie,
+# Displays 'watched' flags depending on the browsing user
+# Parameter: movie_id is used for referencing the correct movie
 def movie_detail(request, movie_id):
     movie = Movie.objects.get(id=movie_id)
     user = request.user
@@ -64,33 +57,38 @@ def movie_detail(request, movie_id):
     return render(request, template_name="detail.html", context={'movie': movie, 'watched': watched})
 
 
-def movie_watched(request, movie_id):
+# Used for changing the watched flag of a movie for the active user
+# Parameter: movie_id is used for referencing the correct movie
+def change_watched(request, movie_id):
     movie = Movie.objects.get(id=movie_id)
     user = request.user
-    movie.viewer.add(user)
+    if movie.viewer.filter(id=user.id).exists():
+        movie.viewer.remove(user)
+    else:
+        movie.viewer.add(user)
     movie.save()
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/movie/movies_list')
 
 
-def movie_unwatched(request, movie_id):
-    movie = Movie.objects.get(id=movie_id)
-    user = request.user
-    movie.viewer.remove(user)
-    movie.save()
-    return HttpResponseRedirect('/')
-
-
+# Used for searching a movie by its title and directing to its details page,
 def movie_search(request):
     form = SearchMovie(request.POST or None)
+    found = True
     if request.POST:
         if form.is_valid():
             title = form.cleaned_data.get('title')
-            movie = Movie.objects.filter(title=title)[0]
-            return HttpResponseRedirect("/movie/detail/{}".format(movie.id))
+            # Check if the movie already exists
+            try:
+                movie = Movie.objects.get(title=title)
+                return HttpResponseRedirect("/movie/detail/{}".format(movie.id))
+            except:
+                found = False
 
-    return render(request, template_name="search_movie.html", context={'form': form})
+    return render(request, template_name="search_movie.html", context={'form': form, 'found': found})
 
 
+# Used for displaying all of the movies
+# If filter is used, the display is filtered, then transferred to the view
 def movie_list(request):
     all_movies = Movie.objects.all()
     user = request.user
@@ -99,7 +97,7 @@ def movie_list(request):
     if request.POST:
         if filter_form.is_valid():
             filter_platform = filter_form.cleaned_data.get('platform')
-            all_movies = all_movies.filter(platform=filter_platform)
+            all_movies = all_movies.filter(platform__icontains=filter_platform)
 
     for movie in all_movies:
         if movie.viewer.filter(id=user.id).exists():
@@ -110,6 +108,8 @@ def movie_list(request):
     return render(request, template_name="movie_list.html", context={'movies': all_movies, 'form': filter_form})
 
 
+# Used for displaying the watched movie list page of the active user
+# The view can be filtered
 def watched_movies(request):
     user = request.user
     watched = Movie.objects.filter(viewer=user)
@@ -119,6 +119,6 @@ def watched_movies(request):
     if request.POST:
         if filter_form.is_valid():
             filter_platform = filter_form.cleaned_data.get('platform')
-            watched = watched.filter(platform=filter_platform)
+            watched = watched.filter(platform__icontains=filter_platform)
 
     return render(request, template_name="watched_movies.html", context={'movies': watched, 'form': filter_form})

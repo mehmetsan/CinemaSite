@@ -10,18 +10,25 @@
     <a href="/review/rate/{{ movie.id }}"><h3>Review this Movie</h3></a>
     <br>
 
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ sort_form.as_p }}
-        <input type="submit">
-    </form>
-    <br>
-
-    {% for review in reviews %}
-        <h2>{{ review.user.first_name }} {{ review.user.last_name }}</h2>
-        <h3>Rating: {{ review.rating }}/10</h3>
-        <h3>{{ review.comment }}</h3>
+    {% if reviews %}
+       <form action="" method="POST">
+            {% csrf_token %}
+            {{ sort_form.as_p }}
+            <input type="submit">
+        </form>
         <br>
-    {% endfor %}
+
+        {% for review in reviews %}
+            <h2>{{ review.user.first_name }} {{ review.user.last_name }}</h2>
+            <h3>Rating: {{ review.rating }}/10</h3>
+            <h3>{{ review.comment }}</h3>
+            <br>
+        {% endfor %}
+    {% else %}
+        <h2>There are no reviews of this movie yet</h2>
+        <a href="/review/rate/{{ movie.id }}"><h2>Be the first one to review!</h2></a>
+    {% endif %}
+
+
 
 {% endblock %}

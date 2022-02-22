@@ -7,11 +7,11 @@
     {% endif %}
     <h2>by {{ movie.director.name }}</h2>
     {% if watched %}
-        <h2>Already Watched</h2><br>
-        <a href="/movie/detail/{{ movie.id }}/unwatched"><h3>Flag as Not Watched</h3></a>
+        <h2>Already Watched</h2>
+        <a href="/movie/detail/{{ movie.id }}/change_watched"><h3>Flag as Not Watched</h3></a><br>
     {% else %}
         <h2>Not Watched Yet</h2>
-        <a href="/movie/detail/{{ movie.id }}/watched"><h3>Flag as Watched</h3></a><br>
+        <a href="/movie/detail/{{ movie.id }}/change_watched"><h3>Flag as Watched</h3></a><br>
     {% endif %}
     <a href="/review/rate/{{ movie.id }}"><h3>Review this Movie</h3></a>
     <a href="/review/movie/{{ movie.id }}"><h3>See Reviews</h3></a>

@@ -3,7 +3,7 @@
 {% block body %}
     <h1>The Director</h1>
     <h2>Enter the name of the director</h2>
-    <form action="/movie/createdirectorform" method="POST">
+    <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit">

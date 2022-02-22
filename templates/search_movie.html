@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <form action="/movie/search" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit">
-    </form>
+    {% if found %}
+       <form action="/movie/search" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit">
+        </form> 
+    {% else %}
+        <h2>Movie doesn't exist in the system, consider adding it yourself!</h2>
+        <a href="/movie/create"><h2>Add Movie</h2></a>
+    {% endif %}
+
 
 {% endblock %}
