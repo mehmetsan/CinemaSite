@@ -1,7 +1,7 @@
 # CinemaSite
 This is a demo movie review site example
 
-# A video tutorial available at:
+# A video demo available at:
 https://www.loom.com/share/61b452bacc084b1a861220efc23e1221
 
 
