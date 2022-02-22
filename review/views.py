@@ -46,3 +46,9 @@ def search_user(request):
 
         return HttpResponseRedirect("/review/user/{}".format(user_id))
     return render(request, template_name="search_user.html", context={'form': form})
+
+
+def movie_reviews(request, movie_id):
+    movie = Movie.objects.get(id=movie_id)
+    reviews = Review.objects.all().filter(movie__id=movie_id)
+    return render(request, template_name="movie_reviews.html", context={'movie': movie, 'reviews': reviews})
